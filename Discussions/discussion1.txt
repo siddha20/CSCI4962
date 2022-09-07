@@ -1,0 +1,22 @@
+What are some of the important problems you think machine learning and AI has
+solved so far? 
+
+Some important problems that machine learning and AI have solved so far include
+computer vision tasks (e.g. image classification, object detection), natural
+language processing (e.g. Siri), and also general classification problems like
+credit risk.
+
+What are some of the areas that still remain unexplored from the perspective of
+AI applications?
+
+Some areas within AI that remain unexpolored are ways to remove ethnic biases
+that may be present as a result of the data set being used. For example, there
+was a facial recognition system used at Heathrow that caused darker skinned
+people to fail much more frequently compared to white people. 
+
+How can AI benefit some of the less explored areas of research and application?
+
+I am not well versed in the field of cybersecurity; however, I feel that AI can
+greatly benefit the security of systems by being able to recognize
+vulnerabilities that humans cannot, or maybe even use AI as opponents to test
+the security of a system. 
