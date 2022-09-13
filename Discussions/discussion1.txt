@@ -9,7 +9,7 @@ credit risk.
 What are some of the areas that still remain unexplored from the perspective of
 AI applications?
 
-Some areas within AI that remain unexpolored are ways to remove ethnic biases
+Some areas within AI that remain unexplored are ways to remove ethnic biases
 that may be present as a result of the data set being used. For example, there
 was a facial recognition system used at Heathrow that caused darker skinned
 people to fail much more frequently compared to white people. 

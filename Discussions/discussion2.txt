@@ -1,0 +1,16 @@
+For any Machine Learning Project, what are some of the important
+considerations, apart from minimizing the error? Any Data or Model
+considerations you may think of? How do they affect the choice of your model,
+data, metrics etc.
+
+One important consideration in a machine learning project is what model you
+want to choose. Ideally, simple is better as it reduces the chances of
+overfitting and generalizes better than a more complex model. Consider a
+situation where linear regression and a deep neural network are used on the
+same set of features, and both approximate the expected values well (low in
+sample error). Due to the approximation generalization tradeoff, one should use
+the linear regression model because it is less complex and, therefore, more
+likely to generalize the data set better. Also, this is related to the ensemble
+methods we discussed in class. For instance, if generalization is a priority,
+one would use bagging, but if lowering bias is a priority, one would use
+boosting.
