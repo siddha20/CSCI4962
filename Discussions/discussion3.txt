@@ -1,0 +1,15 @@
+What type of problems do you think you can solve using Deep Neural Networks
+only? In what type of ML problems would you prefer other ML models over Neural
+Networks? How will you weigh the advantages of one over the other when deciding
+your model?
+
+Deep neural networks are widely used in creating recommendation systems and
+doing classification tasks. Whenever there is an abundance of raw data, black
+box methods such as deep neural networks can perform very well. However, the
+general difficulty in trying to understand what a deep neural network does may
+be a reason to use other machine learning methods. For example, an output from
+a decision tree can be backtracked up the tree to see how the decision was
+made, but backtracking a decision from a deep neural network is highly
+nontrivial. Some things to consider when choosing a model are the type/size of
+data available, the complexity of the model versus the task at hand (Occam's
+Razor), etc.
