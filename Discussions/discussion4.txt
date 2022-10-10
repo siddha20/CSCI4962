@@ -1,0 +1,14 @@
+1. What fields/areas/applications still need a greater usage of NLP techniques?
+2. For machine translation, we saw how attention mechanisms offer a more
+   contextual approach. What are some of the drawbacks of attention mechanisms?
+   (You may refer to research papers here and cite them)
+
+1. One instance that could benefit from greater usage of NLP is filtering in
+   social media applications. For example, an NLP model can be trained to
+   detect comments that demonstrate hate speech, cyberbullying, etc., and then
+   filter out those comments.
+
+2. One drawback of attention mechanisms is that they can be computationally
+   expensive. Specifically for a sequence-to-sequence model, attention weights
+   are assigned for every word for every word in the sequence. In other words,
+   the runtime is quadratic on the length of the sequence.  
