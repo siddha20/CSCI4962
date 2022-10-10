@@ -3,3 +3,16 @@ while training your CNN models. These issues can impact the performance of your
 model. We discussed a few in class. Discuss some of the recent advances in
 Computer Vision and CNN research that can help deal with these issues? (You may
 refer to research papers and articles online: Don't forget to cite them).
+
+
+Class imbalance arises in image classification problems when there might be an
+abundance of some type of image and scarcity of another image in the same
+classification domain. There are certain tricks to use when training a CNN to
+fight this imbalance. One trick is at the data level, where you over sample the
+minority class of image and undersample from the majority class [1]. This is
+relatively easy to implement and is a popular approach. Another trick is at the
+classifier level, where you can assign a different cost when misclassifying a
+sample. The cost is any way to place more importance on misclassifying a
+minority sample. For instance, a CNN that is cost-sensitive can modify the
+learning rate when a minority sample is misclassified such that the magnitude
+of the weight update is higher [1].
