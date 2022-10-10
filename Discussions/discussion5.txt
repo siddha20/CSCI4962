@@ -3,5 +3,3 @@ while training your CNN models. These issues can impact the performance of your
 model. We discussed a few in class. Discuss some of the recent advances in
 Computer Vision and CNN research that can help deal with these issues? (You may
 refer to research papers and articles online: Don't forget to cite them).
-
-
