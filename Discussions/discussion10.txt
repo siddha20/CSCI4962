@@ -1,0 +1,20 @@
+During our discussion of Recommender Systems we primarily discussed some basic
+techniques including some deep learning models used to solve the recommendation
+problem. Cold-Start problem in recommendations is a significant issue (new user
+or item). For a platform like twitter, what are some of the major challenges
+that can occur when recommending items to new users? What could be some of the
+ways using which we can solve the cold start problem? Please cite your sources,
+if you are making suggestions based on existing solutions. However, I would
+like to see some of your own ideas and suggestions here.
+
+
+Forming recommendations for new users is hard for the system because the system
+usually does not have any prior data about the user. This is known as the cold
+start problem, and platforms such as Twitter usually combat it by asking users
+to pick out certain things when they first sign up. For example, when signing
+up for an account, Twitter will first ask to "select at least 3 interests to
+personalize your Twitter experience." Some of the options are music,
+entertainment, sports, etc. The next thing they ask is to pick specific things
+within those categories. By doing this, Twitter now has a basis for
+recommending things, and as the user continues to use the service, more
+feedback will be fed to the system to improve recommendations.  
