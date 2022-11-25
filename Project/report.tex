@@ -10,7 +10,7 @@
 \usepackage{listings}
 \usepackage{fancyvrb}
 \AtBeginEnvironment{align}{\setcounter{equation}{0}}
-\allowdisplaybreaks
+\allowdisplaybreak
 
 \onehalfspacing
 \geometry{letterpaper, portrait, margin=1in}
@@ -66,7 +66,7 @@ Siddha Kilaru \\
     solution in a supervised learning setting. The set of features would be the
     $x$ points, but the set of labels is not immediately obvious. One could say
     the set of labels is a finite set of $y$ points. There are a couple of
-    problems , however. First, if the differential equation has no solution,
+    problems, however. First, if the differential equation has no solution,
     then the labels are unattainable. Secondly, if we use real-world, observed
     data, it might be too granular and contain too much noise. As a result, a
     supervised learning model is not completely appropriate for this task. The
@@ -75,7 +75,7 @@ Siddha Kilaru \\
     the gradient of the differential equation. Moreover, for a given set of
     labels containing $x$ points, each $x$ point replicates the gradient
     described by the differential equation. In the case of $y' = x$, the
-    gradient at each point should be equal to itself. One way to do this is by
+    gradient at each point should be equal to $x$. One way to do this is by
     devising an error function as follows: 
     \bgc 
     $\alpha\Bigl(\dsum{i-0}{n}(\hat{y}_i' - x_i)^2\Bigr)^{1/2} + \beta(\hat{y}_0 - 1)$.
@@ -122,14 +122,15 @@ Siddha Kilaru \\
         \includegraphics[scale=.5]{images/figure3.png}
         \includegraphics[scale=.5]{images/figure4.png}
     \end{minipage}
-
+    \hfill \\
+    \hline
+    \hfill \\
     Moving on, we now focus on the differential equation $5y' - 4y^2 = 0$ with
     initial condition $y(0) = -8$; the exact solution is $-\frac{40}{32x+5}$.
     The loss function is 
     \bgc 
-    $\alpha\Bigl(\dsum{i-0}{n}(5\hat{y}_i' - 4\hat{y}_i^2})^2\Bigr)^{1/2} + \beta(\hat{y}_0 + 8)$.
+    $\alpha\Bigl(\dsum{i-0}{n}(5\hat{y}_i' - 4\hat{y}_i^2)^2\Bigr)^{1/2} + \beta(\hat{y}_0 + 8)$.
     \enc
-
     I find the optimal $\beta = 11$ and $\alpha=1$. Now, I focus on how the
     depth of the neural network affects accuracy and runtime. For $d\in[20,
     500]$, I get the plot below.  \\ 
@@ -154,6 +155,93 @@ Siddha Kilaru \\
     \end{minipage}
 
     \item[Approximating Second Order ODEs] \hfill \\
+    Now, let us experiment with the second order differential equation $10y''+
+    5y = 0$ with initial conditions  $y(0) = 0$ and $y'(0) = 1$; the exact
+    solution is $\sqrt{2}\sin(\frac{x}{\sqrt{2}})$. The loss function is 
+    \bgc 
+    $\alpha\Bigl(\dsum{i-0}{n}(10\hat{y}_i'' + 5\hat{y}_i)^2\Bigr)^{1/2} 
+    + \beta(\hat{y}_0)
+    + \gamma(\hat{y}_0' - 1)$.
+    \enc
+    Note that compared to the first order, there is an extra term due to the
+    added initial condition. Moving on, I find the optimal $\alpha = 1$, $\beta
+    = 1$, and $\gamma = 500$ using the same method. These are the results
+    for $x\in[0, 20]$: \\
+    \begin{minipage}{\linewidth}
+        \centering
+        \includegraphics[scale=.5]{images/figure9.png}
+    \end{minipage}
+    As you can see above, the error decreases significantly towards zero.
+    Moreover, looking at the plots below, the approximate solution matches the
+    exact solution very closely. \\
+    \begin{minipage}{\linewidth}
+        \centering
+        \includegraphics[scale=.5]{images/figure10.png}
+        \includegraphics[scale=.5]{images/figure11.png}
+    \end{minipage}
+    The results shown above are very promising however, what does the
+    approximate solution look like outside the domain $x\in[0, 20]$ of which
+    the neural network was trained on? Looking at the plot below, we can see
+    that approximate solution starts to diverge away from the exact solution.
+    This kind of behavior is expected because since we only train the neural
+    network on a specific range of $x$ values, only those values should have
+    the correct gradient. In other words, the model does not prioritize
+    generalization at all; instead, the model focuses on approximating as close
+    as possible to the desired solution. \\
+    \begin{minipage}{\linewidth}
+        \centering
+        \includegraphics[scale=.5]{images/figure12.png}
+    \end{minipage}
+    \hfill \\
+    \hline
+    \hfill \\
+    Similar to the last differential equation consider $my'' + by' + ky = 0$.
+    In physics, this equation models damped oscillatory behavior, or in other
+    words, a damped spring. Let us set $m = 10$, $b = 2$, and $k = 2$. Here the
+    mass is $2$, damping constant is $2$, and spring constant is $2$.  Also,
+    let the initial conditions be $y(0) = -10$ and $y(0)' = 0$. These
+    conditions state that the object starts at position $-10$ with $0$ initial
+    velocity. The exact solution to this is 
+    \bgc 
+    $y(x) = -\dfrac{10}{19} e^{-\frac{x}{10}} (\sqrt{19}\sin(\sqrt{19}x/10) + 19\cos(\sqrt{19}x/10))$,
+    \enc
+    and the loss function is 
+    \bgc 
+    $\alpha\Bigl(\dsum{i-0}{n}(10\hat{y}_i'' + 2\hat{y}_i' + 2\hat{y}_i)^2\Bigr)^{1/2} 
+    + \beta(\hat{y}_0 + 10)
+    + \gamma(\hat{y}_0')$.
+    \enc
+    Training the neural network with $x\in[0, 55]$ with $50$ points yields the
+    results below. \\ 
+    \begin{minipage}{\linewidth}
+        \centering
+        \includegraphics[scale=.5]{images/figure13.png}
+        \includegraphics[scale=.5]{images/figure14.png}
+    \end{minipage}
+    Interestingly, the error rapidly decreases then starts to increase. This is
+    also represented in the second plot where it first starts to properly fit,
+    then starts reverting into a worse approximation. I theorize this is due to
+    the fact that 50 points in the range 0 to 55 is not enough. The fewer
+    points cause a single point to appease to contrasting gradients. Below are
+    the results for the neural network trained with $x\in[0, 55]$ with $300$
+    points. \\
+    \begin{minipage}{\linewidth}
+        \centering
+        \includegraphics[scale=.5]{images/figure15.png}
+        \includegraphics[scale=.5]{images/figure16.png}
+    \end{minipage}
+    Now, the error function is monotonically decreasing, and the approximate
+    solution is very close to the exact solution. Another interesting thing
+    about this solution in particular is that it decays, or in other words the
+    derivative flattens as $x$ increases. A consequence of this is that unlike
+    the previous equation where the approximate solution deviates away from the
+    exact solution, the approximate solution will continue to follow the exact
+    solution. This can be seen in the plot below. The network was only trained
+    for $x\in[0, 50]$, but the plot is for $x\in[0, 150]$. \\
+    \begin{minipage}{\linewidth}
+        \centering
+        \includegraphics[scale=.5]{images/figure17.png}
+    \end{minipage}
     \item[Comparison to Traditional Methods] \hfill \\
 \end{description}
 
