@@ -46,48 +46,113 @@ Siddha Kilaru \\
     The goal of this project is to explore how neural networks can be used to
     approximate solutions to differential equations. The paper ``Physics
     Informed Deep Learning'' by Maziar Raissi, Paris Perdikaris, George Em
-    Karniadakis is the inspiration for this project. In the paper, they
-    introduce the concept of physics informed neural networks, and use it to
-    find solutions to nonlinear partial differential equations. In this
-    project, I use the methods detailed in the paper, but with simpler
-    differential equations. Specifically, I focus on first order and second
-    order ordinary differential equations (ODE), which have analytical
-    solutions. In reality, there is no use of approximating a differential
-    equation with an analytical solution; however, for the purposes of this
-    project I want to compute the accuracy of the approximated solution. In
-    addition to using the methods outlined in paper, I also experiment with
-    different model hyperparameters and see how it affects the runtime,
-    accuracy, etc. Finally, I compare approximate solutions derived from neural
-    networks with traditional methods such as Euler's methods and higher order
-    Runge-Kutta methods.
+    Karniadakis is the inspiration for this project. The paper introduces the
+    concept of physics-informed neural networks and uses it to find solutions
+    to nonlinear partial differential equations. In this project, I use the
+    methods detailed in the paper but with simpler differential equations.
+    Specifically, I focus on first-order and second-order ordinary differential
+    equations (ODE), which have analytical solutions. In reality, there is no
+    use in approximating a differential equation with an analytical solution;
+    however, for the purposes of this project, I want to compute the accuracy
+    of the approximated solution. In addition to using the methods outlined in
+    the paper, I also experiment with different model hyperparameters and see
+    how it affects the runtime and accuracy. Finally, I compare approximate
+    solutions derived from neural networks with traditional methods such as
+    Euler's and higher-order Runge-Kutta methods.
 
     \item[Unsupervised Approach] \hfill \\
     Consider the simple differential equation $y' = x$ with initial condition
-    $y(0) = 1$. Also assume we use a neural network to approximate the solution
-    in a supervised learning setting. The set of features would be the $x$
-    points, but the set of labels is not immediately obvious. One could say the
-    set of labels are a finite set of $y$ points. There are couple problems
-    however. First, if the differential equation has no solution, then the
-    labels are attainable. Secondly, if we use real world observed data there
-    might be too granular and contain too much noise. As a result, a supervised
-    learning model is not completely appropriate for this task. The paper
-    mentioned above uses an alternative method that makes use of unsupervised
-    learning. The main idea is for the neural networks to learn the gradient of
-    the differential equation. Moreover, for a given set of labels containing
-    $x$ points, each $x$ points replicates the gradient described by the
-    differential equation. In the case for $y' = x$, the gradient at each point
-    should be equal to itself. One way to do this is by devising an error
-    function as follows: 
+    $y(0) = 1$. Also, assume we use a neural network to approximate the
+    solution in a supervised learning setting. The set of features would be the
+    $x$ points, but the set of labels is not immediately obvious. One could say
+    the set of labels is a finite set of $y$ points. There are a couple of
+    problems , however. First, if the differential equation has no solution,
+    then the labels are unattainable. Secondly, if we use real-world, observed
+    data, it might be too granular and contain too much noise. As a result, a
+    supervised learning model is not completely appropriate for this task. The
+    paper mentioned above uses an alternative method that makes use of
+    unsupervised learning. The main idea is for the neural networks to learn
+    the gradient of the differential equation. Moreover, for a given set of
+    labels containing $x$ points, each $x$ point replicates the gradient
+    described by the differential equation. In the case of $y' = x$, the
+    gradient at each point should be equal to itself. One way to do this is by
+    devising an error function as follows: 
     \bgc 
     $\alpha\Bigl(\dsum{i-0}{n}(\hat{y}_i' - x_i)^2\Bigr)^{1/2} + \beta(\hat{y}_0 - 1)$.
     \enc
     Above, $\alpha$ and $\beta$ are hyperparameters. The first term in the sum
-    enforces the ODE constraint, and the second term enforces the intitial
-    condition. This error function can be used by a neural network to find an
-    approximate solution. In the sections below, I experiment with different
-    differential equations along and their corresponding error functions. 
+    enforces the ODE constraint, and the second term enforces the initial
+    condition. A neural network can use this error function to find an
+    approximate solution. I experiment with different differential equations
+    and their corresponding error functions in the sections below. 
 
     \item[Approximating First Order ODEs] \hfill \\
+    First, let us consider the differential equation $y' = e^x$ with initial
+    condition $y(0) = 1$. Trivially, the solution can be analytically
+    determined to be $y = e^x$. To approximate the solution, a neural network
+    with three hidden layers will be used. One of the hyperparameters for the
+    model is the depth of each hidden layer, $d$. The other two hyperparameters
+    $\alpha$ and $\beta$ are part of the loss function:
+    \bgc 
+    $\alpha\Bigl(\dsum{i-0}{n}(\hat{y}_i' -e^{x_i})^2\Bigr)^{1/2} + \beta(\hat{y}_0 - 1)$.
+    \enc
+    To find the optimal $\beta$, I fix $\alpha = 1$, $d = 20$, and do a search with
+    $\beta\in[0, 20]$. The results of the grid search are shown in the plot
+    below.\\
+    \begin{minipage}{\linewidth}
+        \centering
+        \includegraphics[scale=.5]{images/figure1.png}
+    \end{minipage}
+    In the plot, the x-axis represents the different $\beta$, and the y-axis is
+    the error defined as 
+    \bgc 
+    $\dfrac{1}{n}\dsum{i=0}{n}(\hat{y}_i - y_i)^2$.
+    \enc
+    The minimum error occurs when $\beta = 2$, which is the estimated optimal
+    value. Next, after training the model, the following results were achieved: \\
+    \begin{minipage}{\linewidth}
+        \centering
+        \includegraphics[scale=.5]{images/figure2.png}
+    \end{minipage}
+    As you can see in the plot above, the error started to decrease rapidly
+    just after a few batches. Also, looking at the plots below, the approximate
+    solution very closely matches the exact solution. \\
+    \begin{minipage}{\linewidth}
+        \centering
+        \includegraphics[scale=.5]{images/figure3.png}
+        \includegraphics[scale=.5]{images/figure4.png}
+    \end{minipage}
+
+    Moving on, we now focus on the differential equation $5y' - 4y^2 = 0$ with
+    initial condition $y(0) = -8$; the exact solution is $-\frac{40}{32x+5}$.
+    The loss function is 
+    \bgc 
+    $\alpha\Bigl(\dsum{i-0}{n}(5\hat{y}_i' - 4\hat{y}_i^2})^2\Bigr)^{1/2} + \beta(\hat{y}_0 + 8)$.
+    \enc
+
+    I find the optimal $\beta = 11$ and $\alpha=1$. Now, I focus on how the
+    depth of the neural network affects accuracy and runtime. For $d\in[20,
+    500]$, I get the plot below.  \\ 
+    \begin{minipage}{\linewidth}
+        \centering
+        \includegraphics[scale=.5]{images/figure5.png}
+        \includegraphics[scale=.5]{images/figure6.png}
+    \end{minipage}
+    Looking at the plot, there is a clear relationship between depth and
+    training time: as the depth increases, the training time increases. The
+    relationship appears linear in the plot; however, more investigation is
+    needed to determine if that is actually the case. According to the second
+    plot, the optimal depth is 95; however, 50 also yields a very low error. If
+    we also consider the run time in choosing the optimal depth, then perhaps
+    50 is better because of its shorter runtime. Finally, looking at the plots
+    below, we can see that the approximate solution is very close to the exact
+    solution. \\
+    \begin{minipage}{\linewidth}
+        \centering
+        \includegraphics[scale=.5]{images/figure7.png}
+        \includegraphics[scale=.5]{images/figure8.png}
+    \end{minipage}
+
     \item[Approximating Second Order ODEs] \hfill \\
     \item[Comparison to Traditional Methods] \hfill \\
 \end{description}
