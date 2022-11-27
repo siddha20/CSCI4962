@@ -9,8 +9,14 @@
 \usepackage{relsize}
 \usepackage{listings}
 \usepackage{fancyvrb}
+\usepackage{hyperref}
 \AtBeginEnvironment{align}{\setcounter{equation}{0}}
 \allowdisplaybreak
+
+\hypersetup{
+    colorlinks=true, 
+    urlcolor=blue
+}
 
 \onehalfspacing
 \geometry{letterpaper, portrait, margin=1in}
@@ -155,7 +161,7 @@ Siddha Kilaru \\
     \end{minipage}
 
     \item[Approximating Second Order ODEs] \hfill \\
-    Now, let us experiment with the second order differential equation $10y''+
+    Now, let us experiment with the second-order differential equation $10y''+
     5y = 0$ with initial conditions  $y(0) = 0$ and $y'(0) = 1$; the exact
     solution is $\sqrt{2}\sin(\frac{x}{\sqrt{2}})$. The loss function is 
     \bgc 
@@ -171,7 +177,7 @@ Siddha Kilaru \\
         \centering
         \includegraphics[scale=.5]{images/figure9.png}
     \end{minipage}
-    As you can see above, the error decreases significantly towards zero.
+    As you can see above, the error decreases significantly toward zero.
     Moreover, looking at the plots below, the approximate solution matches the
     exact solution very closely. \\
     \begin{minipage}{\linewidth}
@@ -179,13 +185,13 @@ Siddha Kilaru \\
         \includegraphics[scale=.5]{images/figure10.png}
         \includegraphics[scale=.5]{images/figure11.png}
     \end{minipage}
-    The results shown above are very promising however, what does the
-    approximate solution look like outside the domain $x\in[0, 20]$ of which
-    the neural network was trained on? Looking at the plot below, we can see
-    that approximate solution starts to diverge away from the exact solution.
-    This kind of behavior is expected because since we only train the neural
-    network on a specific range of $x$ values, only those values should have
-    the correct gradient. In other words, the model does not prioritize
+    The results shown above are auspicious; however, what does the approximate
+    solution look like outside the domain $x\in[0, 20]$ of which the neural
+    network was trained on? Looking at the plot below, we can see that
+    approximate solution starts to diverge away from the exact solution. This
+    kind of behavior is expected because since we only train the neural network
+    on a specific range of $x$ values, only those values should have the
+    correct gradient. In other words, the model does not prioritize
     generalization at all; instead, the model focuses on approximating as close
     as possible to the desired solution. \\
     \begin{minipage}{\linewidth}
@@ -195,7 +201,7 @@ Siddha Kilaru \\
     \hfill \\
     \hline
     \hfill \\
-    Similar to the last differential equation consider $my'' + by' + ky = 0$.
+    Similar to the last differential equation, consider $my'' + by' + ky = 0$.
     In physics, this equation models damped oscillatory behavior, or in other
     words, a damped spring. Let us set $m = 10$, $b = 2$, and $k = 2$. Here the
     mass is $2$, damping constant is $2$, and spring constant is $2$.  Also,
@@ -218,13 +224,13 @@ Siddha Kilaru \\
         \includegraphics[scale=.5]{images/figure13.png}
         \includegraphics[scale=.5]{images/figure14.png}
     \end{minipage}
-    Interestingly, the error rapidly decreases then starts to increase. This is
-    also represented in the second plot where it first starts to properly fit,
-    then starts reverting into a worse approximation. I theorize this is due to
-    the fact that 50 points in the range 0 to 55 is not enough. The fewer
-    points cause a single point to appease to contrasting gradients. Below are
-    the results for the neural network trained with $x\in[0, 55]$ with $300$
-    points. \\
+    Interestingly, the error rapidly decreases and then starts to increase.
+    This is also represented in the second plot, where it first starts to fit
+    properly, then starts reverting to a worse approximation. I theorize this
+    is due to the fact that 50 points in the range of 0 to 55 are not enough.
+    The fewer points cause a single point to appease contrasting gradients.
+    Below are the results for the neural network trained with $x\in[0, 55]$
+    with $300$ points. \\
     \begin{minipage}{\linewidth}
         \centering
         \includegraphics[scale=.5]{images/figure15.png}
@@ -232,9 +238,9 @@ Siddha Kilaru \\
     \end{minipage}
     Now, the error function is monotonically decreasing, and the approximate
     solution is very close to the exact solution. Another interesting thing
-    about this solution in particular is that it decays, or in other words the
-    derivative flattens as $x$ increases. A consequence of this is that unlike
-    the previous equation where the approximate solution deviates away from the
+    about this solution, in particular, is that it decays, or the derivative
+    flattens as $x$ increases. A consequence of this is that, unlike the
+    previous equation, where the approximate solution deviates away from the
     exact solution, the approximate solution will continue to follow the exact
     solution. This can be seen in the plot below. The network was only trained
     for $x\in[0, 50]$, but the plot is for $x\in[0, 150]$. \\
@@ -243,6 +249,57 @@ Siddha Kilaru \\
         \includegraphics[scale=.5]{images/figure17.png}
     \end{minipage}
     \item[Comparison to Traditional Methods] \hfill \\
+    Euler's Method is one of the most popular and simplest methods for
+    numerically solving differential equations. One important difference
+    between Euler's Method and any finite difference method for solving
+    differential equations are that they are iterative. Moreover, if the
+    initial condition is at $x=0$, and you desire a solution at $x=100$, then
+    you must iteratively compute the solution. So, if the spacing between each
+    point is $\kappa$, you must do $100\over\kappa$ computations. This can be
+    costly because $\kappa$ must be very small to approximate the solution
+    accurately. In contrast, with a neural network, any point within the
+    trained bounds can be instantly computed with a single feed-forward
+    computation. Yes, the neural network requires training time which is
+    arguably more costly; further analysis should be done to understand the
+    tradeoff between the two methods.
+
+    Below are plots comparing Euler's Method to a neural network's approximate
+    for a different number of points $N$. I use the differential equation $5y'
+    - 4y^2 = 0$ with initial condition $y(0) = -8$. \\
+    \begin{minipage}{\linewidth}
+        \centering
+        \includegraphics[scale=.5]{images/euler10.png}
+        \includegraphics[scale=.5]{images/euler20.png}
+        \includegraphics[scale=.5]{images/euler50.png}
+        \includegraphics[scale=.5]{images/euler500.png}
+    \end{minipage}
+    Looking at the plots with $N = 10$ and $N = 20$, the solution created by
+    Euler's Method ended up being highly unstable and increasing towards
+    infinity. However, with $N = 50$ and $N = 500$, the solution was a fairly
+    good fit. The neural network approximation was stable for all $N$ and got
+    better as $N$ increased. Even with $N = 10$, the neural network
+    approximation was fairly accurate. 
+
+    The next traditional method I would like to compare neural networks against
+    is RK4. Compared to Euler's Method, RK4 is a lot more robust (much more
+    stable) and better at approximating. However, it requires several more
+    function evaluations compared to Euler's Method. Below are the plots
+    comparing RK4 to a neural network using the same differential equation as
+    above. \\
+    \begin{minipage}{\linewidth}
+        \centering
+        \includegraphics[scale=.5]{images/rk10.png}
+        \includegraphics[scale=.5]{images/rk20.png}
+        \includegraphics[scale=.5]{images/rk50.png}
+        \includegraphics[scale=.5]{images/rk500.png}
+    \end{minipage}
+    At $N=10$, RK4 is unstable and tends toward infinity. However, at $N=20$,
+    unlike Euler's Method, it approximates the solution. At $N=50$ and $N=500$,
+    RK4 is spot on. Comparing this to the neural network, we can see that the
+    neural network only outperformed with $N=10$ and $N=20$. 
+    \item[Notebook] \hfill \\
+    The jupyter notebook for this project can be accessed here: \\
+    \url{https://github.com/siddha20/CSCI4962/blob/master/Project/project.ipynb}.
 \end{description}
 
 
