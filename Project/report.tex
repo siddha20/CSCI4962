@@ -51,7 +51,7 @@ Siddha Kilaru \\
     \item[Introduction] \hfill \\
     The goal of this project is to explore how neural networks can be used to
     approximate solutions to differential equations. The paper ``Physics
-    Informed Deep Learning'' by Maziar Raissi, Paris Perdikaris, George Em
+    Informed Deep Learning'' by Maziar Raissi, Paris Perdikaris, and George Em
     Karniadakis is the inspiration for this project. The paper introduces the
     concept of physics-informed neural networks and uses it to find solutions
     to nonlinear partial differential equations. In this project, I use the
@@ -89,8 +89,12 @@ Siddha Kilaru \\
     Above, $\alpha$ and $\beta$ are hyperparameters. The first term in the sum
     enforces the ODE constraint, and the second term enforces the initial
     condition. A neural network can use this error function to find an
-    approximate solution. I experiment with different differential equations
-    and their corresponding error functions in the sections below. 
+    approximate solution. Furthermore, the neural network used throughout the
+    project is a simple feed forward network with three dense layers.
+    Initially, the activation functions were all ReLU; however, since the
+    second order differential equations requires second order differentiation,
+    I changed the activations to tanh. In the sections below, I experiment with
+    different differential equations and their corresponding error functions. 
 
     \item[Approximating First Order ODEs] \hfill \\
     First, let us consider the differential equation $y' = e^x$ with initial
@@ -296,7 +300,52 @@ Siddha Kilaru \\
     At $N=10$, RK4 is unstable and tends toward infinity. However, at $N=20$,
     unlike Euler's Method, it approximates the solution. At $N=50$ and $N=500$,
     RK4 is spot on. Comparing this to the neural network, we can see that the
-    neural network only outperformed with $N=10$ and $N=20$. 
+    neural network only outperformed with $N=10$ and $N=20$.
+    \item[Comparison of Activation Functions] \hfill \\ 
+    As mentioned previously, any linear activation function or activation
+    function without a second derivative is not sufficient for approximating
+    higher order differential equations. The activation function used for all
+    the experiments above were tanh, but in this section, I use the SiLU
+    activation function: $x * \sigma(x)$. SiLU (swish function) is closely
+    related to ReLU, but does allow for approximating second-order differential
+    equations. Below is a visual comparison between the different activation
+    functions: \\
+    \begin{minipage}{\linewidth}
+        \centering
+        \includegraphics[scale=.45]{images/silu.png}
+        \includegraphics[scale=.45]{images/relu.png}
+        \includegraphics[scale=.45]{images/tanh.png}
+    \end{minipage}
+    The main problem with using tanh as an activation function is the vanishing
+    gradient problem and the usual solution is to use the ReLU activation
+    instead. However, as stated above, that will not work, so instead, I used
+    SiLU. Below is the error convergence of the same spring damper differential
+    equation used above: \\
+    \begin{minipage}{\linewidth}
+        \centering
+        \includegraphics[scale=.5]{images/2ndsiluconv.png}
+        \includegraphics[scale=.5]{images/2ndsilufn.png}
+    \end{minipage}
+    As you can see, the error dropped to zero just before 20 batches using
+    SiLU, but it took about 40 batches using tanh. Additionally, the
+    approximated solution matches the exact solution much more closely.
+
+    \item[Conclusion] \hfill \\ 
+    The results of my project illustrate that neural networks could be a viable
+    approach to approximating differential equations. However, there are
+    specific problems with neural networks and the unsupervised approach.
+    First, in one of the sections above, I showed that the approximated
+    solution becomes unreliable when the inputs used are outside the training
+    boundaries. This is a significant drawback in simulating events when there
+    is no clear upper bound. Though one possible exception to this is the
+    spring damper equation with a decaying solution. Second, training times can
+    be very long and not worth using over alternative methods. However, when
+    compared to traditional methods, the neural network could approximate with
+    fewer points hinting at lower runtimes. Still, more advanced numerical
+    methods , such as the RK4 quickly caught up. In conclusion, neural networks
+    are dope, but for now, I'd stick to the tried and tested and do more
+    research on neural network solvers. 
+
     \item[Notebook] \hfill \\
     The jupyter notebook for this project can be accessed here: \\
     \url{https://github.com/siddha20/CSCI4962/blob/master/Project/project.ipynb}.
