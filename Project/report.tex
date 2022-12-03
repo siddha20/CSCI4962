@@ -133,7 +133,7 @@ Siddha Kilaru \\
         \includegraphics[scale=.5]{images/figure4.png}
     \end{minipage}
     \hfill \\
-    \hline
+    \noindent\rule{15.5cm}{.4pt}
     \hfill \\
     Moving on, we now focus on the differential equation $5y' - 4y^2 = 0$ with
     initial condition $y(0) = -8$; the exact solution is $-\frac{40}{32x+5}$.
@@ -203,7 +203,7 @@ Siddha Kilaru \\
         \includegraphics[scale=.5]{images/figure12.png}
     \end{minipage}
     \hfill \\
-    \hline
+    \noindent\rule{15.5cm}{.4pt}
     \hfill \\
     Similar to the last differential equation, consider $my'' + by' + ky = 0$.
     In physics, this equation models damped oscillatory behavior, or in other
@@ -353,18 +353,33 @@ Siddha Kilaru \\
     + \kappa\Biggl(\dsum{i=0}{n}\hat{u(0, t_i)}^2\Biggr)^{1/2}
     + \gamma\Biggl(\dsum{i=0}{n}\hat{u(1, t_i)}^2\Biggr)^{1/2}$}.
     \enc
-    After finding the optimal hyperparameters and training the neural network,
-    I got the results below. \\
+    Through experimentation I found the optimal hyperparameters to be $\alpha =
+    1, \beta = 250, \kappa = 60$, and $\gamma = 60$. Below is the error
+    convergence for $\hat{u(x, 1)}$ over 500 batches. \\
+    \begin{minipage}{\linewidth}
+        \centering
+        \includegraphics[scale=.5]{images/figure20.png}
+    \end{minipage}
+    As shown by the plot, the error immediately drops after just a few batches
+    and continues to decrease slowly. Training a two-dimensional function took
+    much more time than a one-dimensional function. If $n$ training points were
+    used in a one-dimensional setting, then comparably, $n^2$ points must be
+    used to capture all pairwise relationships. Moreover, on my setup, the
+    training times for $n=50$ in the one-dimensional setting was about the same
+    as $n=10$ in the two-dimensional setting. 
+    
+    The plots below are the final results produced by the trained neural
+    network: \\
     \begin{minipage}{\linewidth}
         \centering
         \includegraphics[scale=.5]{images/figure18.png}
         \includegraphics[scale=.5]{images/figure19.png}
     \end{minipage}
-    As you can see, the neural network approximates the solution well. The two
-    plots on top (the exact and approximate solution) represent the plots of
-    $u(x, t)$, where the lighter lines have a $t$ closer to 0. For the heatmaps
-    on the bottom, a darker shade is cooler, and the time increases in the
-    downward direction of the $y$-axis.
+    As you can see, the neural network approximates the solution fairly well.
+    The two plots on top (the exact and approximate solution) represent the
+    plots of $u(x, t)$, where the lighter lines have a $t$ closer to 0. For the
+    heatmaps on the bottom, a darker shade is cooler, and the time increases in
+    the downward direction of the $y$-axis.
 
     \item[Conclusion] \hfill \\ 
     The results of my project illustrate that neural networks could be a viable
