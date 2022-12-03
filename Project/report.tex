@@ -10,8 +10,8 @@
 \usepackage{listings}
 \usepackage{fancyvrb}
 \usepackage{hyperref}
-\AtBeginEnvironment{align}{\setcounter{equation}{0}}
-\allowdisplaybreak
+\usepackage{bookmark}
+
 
 \hypersetup{
     colorlinks=true, 
@@ -84,7 +84,7 @@ Siddha Kilaru \\
     gradient at each point should be equal to $x$. One way to do this is by
     devising an error function as follows: 
     \bgc 
-    $\alpha\Bigl(\dsum{i-0}{n}(\hat{y}_i' - x_i)^2\Bigr)^{1/2} + \beta(\hat{y}_0 - 1)$.
+    $\alpha\Bigl(\dsum{i=0}{n}(\hat{y}_i' - x_i)^2\Bigr)^{1/2} + \beta(\hat{y}_0 - 1)$.
     \enc
     Above, $\alpha$ and $\beta$ are hyperparameters. The first term in the sum
     enforces the ODE constraint, and the second term enforces the initial
@@ -104,7 +104,7 @@ Siddha Kilaru \\
     model is the depth of each hidden layer, $d$. The other two hyperparameters
     $\alpha$ and $\beta$ are part of the loss function:
     \bgc 
-    $\alpha\Bigl(\dsum{i-0}{n}(\hat{y}_i' -e^{x_i})^2\Bigr)^{1/2} + \beta(\hat{y}_0 - 1)$.
+    $\alpha\Bigl(\dsum{i=0}{n}(\hat{y}_i' -e^{x_i})^2\Bigr)^{1/2} + \beta(\hat{y}_0 - 1)$.
     \enc
     To find the optimal $\beta$, I fix $\alpha = 1$, $d = 20$, and do a search with
     $\beta\in[0, 20]$. The results of the grid search are shown in the plot
@@ -139,7 +139,7 @@ Siddha Kilaru \\
     initial condition $y(0) = -8$; the exact solution is $-\frac{40}{32x+5}$.
     The loss function is 
     \bgc 
-    $\alpha\Bigl(\dsum{i-0}{n}(5\hat{y}_i' - 4\hat{y}_i^2)^2\Bigr)^{1/2} + \beta(\hat{y}_0 + 8)$.
+    $\alpha\Bigl(\dsum{i=0}{n}(5\hat{y}_i' - 4\hat{y}_i^2)^2\Bigr)^{1/2} + \beta(\hat{y}_0 + 8)$.
     \enc
     I find the optimal $\beta = 11$ and $\alpha=1$. Now, I focus on how the
     depth of the neural network affects accuracy and runtime. For $d\in[20,
@@ -169,7 +169,7 @@ Siddha Kilaru \\
     5y = 0$ with initial conditions  $y(0) = 0$ and $y'(0) = 1$; the exact
     solution is $\sqrt{2}\sin(\frac{x}{\sqrt{2}})$. The loss function is 
     \bgc 
-    $\alpha\Bigl(\dsum{i-0}{n}(10\hat{y}_i'' + 5\hat{y}_i)^2\Bigr)^{1/2} 
+    $\alpha\Bigl(\dsum{i=0}{n}(10\hat{y}_i'' + 5\hat{y}_i)^2\Bigr)^{1/2} 
     + \beta(\hat{y}_0)
     + \gamma(\hat{y}_0' - 1)$.
     \enc
@@ -217,7 +217,7 @@ Siddha Kilaru \\
     \enc
     and the loss function is 
     \bgc 
-    $\alpha\Bigl(\dsum{i-0}{n}(10\hat{y}_i'' + 2\hat{y}_i' + 2\hat{y}_i)^2\Bigr)^{1/2} 
+    $\alpha\Bigl(\dsum{i=0}{n}(10\hat{y}_i'' + 2\hat{y}_i' + 2\hat{y}_i)^2\Bigr)^{1/2} 
     + \beta(\hat{y}_0 + 10)
     + \gamma(\hat{y}_0')$.
     \enc
@@ -259,7 +259,7 @@ Siddha Kilaru \\
     differential equations are that they are iterative. Moreover, if the
     initial condition is at $x=0$, and you desire a solution at $x=100$, then
     you must iteratively compute the solution. So, if the spacing between each
-    point is $\kappa$, you must do $100\over\kappa$ computations. This can be
+    point is $\kappa$, you must do $\frac{100}{\kappa}$ computations. This can be
     costly because $\kappa$ must be very small to approximate the solution
     accurately. In contrast, with a neural network, any point within the
     trained bounds can be instantly computed with a single feed-forward
@@ -329,6 +329,42 @@ Siddha Kilaru \\
     As you can see, the error dropped to zero just before 20 batches using
     SiLU, but it took about 40 batches using tanh. Additionally, the
     approximated solution matches the exact solution much more closely.
+
+    \item[Approximating a Solution to the Heat Equation] \hfill \\
+    The heat equation in one dimension is 
+    \bgc 
+    $\dfrac{\partial u}{\partial t} = \kappa \dfrac{\partial^2 u}{\partial t^2}$.
+    \enc
+    The boundary conditions will be 
+    \bgc 
+    $u(a, t) = 0$ and $u(b, t) = 0$,
+    \enc
+    and the initial condition is 
+    \bgc 
+    $u(x, 0) = f(x)$.
+    \enc 
+    I set the initial distribution for the heat to be $f(x) = 6\sin(x\pi/b)$
+    and set $a = 0$, $b = 1$, and $\kappa = 1$. The exact solution is $u(x, t)
+    = 6\sin(x\pi)e^{-t\pi^2}$. The loss function is 
+    \bgc
+    \scalebox{.8}{
+    $\alpha\Biggl[\dsum{i=0}{n}\Biggl(\dfrac{\partial \hat{u}_i}{\partial x_i} - \dfrac{\partial^2 \hat{u}_i}{\partial t_i^2}\Biggr)^2\Biggr]^{1/2} 
+    + \beta\Biggl(\dsum{i=0}{n}(\hat{u(x_i, 0)} - f(x_i))^2\Biggr)^{1/2}
+    + \kappa\Biggl(\dsum{i=0}{n}\hat{u(0, t_i)}^2\Biggr)^{1/2}
+    + \gamma\Biggl(\dsum{i=0}{n}\hat{u(1, t_i)}^2\Biggr)^{1/2}$}.
+    \enc
+    After finding the optimal hyperparameters and training the neural network,
+    I got the results below. \\
+    \begin{minipage}{\linewidth}
+        \centering
+        \includegraphics[scale=.5]{images/figure18.png}
+        \includegraphics[scale=.5]{images/figure19.png}
+    \end{minipage}
+    As you can see, the neural network approximates the solution well. The two
+    plots on top (the exact and approximate solution) represent the plots of
+    $u(x, t)$, where the lighter lines have a $t$ closer to 0. For the heatmaps
+    on the bottom, a darker shade is cooler, and the time increases in the
+    downward direction of the $y$-axis.
 
     \item[Conclusion] \hfill \\ 
     The results of my project illustrate that neural networks could be a viable
