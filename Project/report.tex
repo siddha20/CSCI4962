@@ -11,6 +11,7 @@
 \usepackage{fancyvrb}
 \usepackage{hyperref}
 \usepackage{bookmark}
+\usepackage{amsfonts}
 
 
 \hypersetup{
@@ -37,6 +38,14 @@
 \newcommand{\sotimes}{\scalebox{.9}{$\otimes$}}
 \newcommand{\rarrowtext}[1]{\xrightarrow{\mathrm{#1}}}
 
+\newcommand{\C}[1]{\lstinline{#1}}
+
+\fvset{baselinestretch=1}
+\lstset{
+  basicstyle=\ttfamily,
+  columns=fullflexible,
+  keepspaces=true,
+}
 
 
 \begin{document}
@@ -95,6 +104,34 @@ Siddha Kilaru \\
     second order differential equations requires second order differentiation,
     I changed the activations to tanh. In the sections below, I experiment with
     different differential equations and their corresponding error functions. 
+
+    \item[Data Exploration and Usage] \hfill \\
+    In a standard machine learning project with supervised learning, it would
+    be typical to research for quality data sources, analyze/explore the data,
+    and perform necessary modifications to get ready for training. However, as
+    mentioned in the previous section, this project is focused on unsupervised
+    learning. Additionally, I am only focused on exploiting the powerful
+    approximation powers of neural networks to fitting analytically defined
+    mathematical functions in $\mathbb{R}^n$. Because of this, most of the
+    steps mentioned are unnecessary and counterproductive: it does not make
+    sense to research for real-world data sets. I need fine control over the
+    data I generate because it can drastically affect the neural network's
+    performance (numerical methods resort to discretized vectors because it is
+    impossible to have continuous variables due to memory and processing
+    constraints). 
+    
+    Not much preprocessing was required to generate data in one dimension
+    ($\mathbb{R}^1$). However, generating data for two dimensions
+    ($\mathbb{R}^2$) required a non-trivial amount of preprocessing. For
+    $\mathbb{R}^1$, it was sufficient to decide on a range $x\in[a, b]$ and the
+    number of points $N$ then use \C{torch.linspace(a, b, N)} as needed. In
+    contrast, for $\mathbb{R}^2$, the generated vectors need to span a whole
+    plane. It is not sufficient to just do $x\in[a, b]$ and $y\in[c, d]$,
+    rather we need $A = \{(x, y)~|~x, y \in \mathbb{R};a\leq x \leq b, c \leq y
+    \leq d \}$. This requires a lot more computational power: if $N = 500$,
+    then the input vector will contain $500^2$ elements. Fortunately, the NumPy
+    library has a method \C{numpy.meshgrid} that efficiently implements part of
+    this process.
 
     \item[Approximating First Order ODEs] \hfill \\
     First, let us consider the differential equation $y' = e^x$ with initial
@@ -283,7 +320,9 @@ Siddha Kilaru \\
     good fit. The neural network approximation was stable for all $N$ and got
     better as $N$ increased. Even with $N = 10$, the neural network
     approximation was fairly accurate. 
-
+    \hfill \\
+    \noindent\rule{15.5cm}{.4pt}
+    \hfill \\
     The next traditional method I would like to compare neural networks against
     is RK4. Compared to Euler's Method, RK4 is a lot more robust (much more
     stable) and better at approximating. However, it requires several more
@@ -333,7 +372,7 @@ Siddha Kilaru \\
     \item[Approximating a Solution to the Heat Equation] \hfill \\
     The heat equation in one dimension is 
     \bgc 
-    $\dfrac{\partial u}{\partial t} = \kappa \dfrac{\partial^2 u}{\partial t^2}$.
+    $\dfrac{\partial u}{\partial t} = \kappa \dfrac{\partial^2 u}{\partial x^2}$.
     \enc
     The boundary conditions will be 
     \bgc 
@@ -348,7 +387,7 @@ Siddha Kilaru \\
     = 6\sin(x\pi)e^{-t\pi^2}$. The loss function is 
     \bgc
     \scalebox{.8}{
-    $\alpha\Biggl[\dsum{i=0}{n}\Biggl(\dfrac{\partial \hat{u}_i}{\partial x_i} - \dfrac{\partial^2 \hat{u}_i}{\partial t_i^2}\Biggr)^2\Biggr]^{1/2} 
+    $\alpha\Biggl[\dsum{i=0}{n}\Biggl(\dfrac{\partial \hat{u}_i}{\partial t_i} - \dfrac{\partial^2 \hat{u}_i}{\partial x_i^2}\Biggr)^2\Biggr]^{1/2} 
     + \beta\Biggl(\dsum{i=0}{n}(\hat{u(x_i, 0)} - f(x_i))^2\Biggr)^{1/2}
     + \kappa\Biggl(\dsum{i=0}{n}\hat{u(0, t_i)}^2\Biggr)^{1/2}
     + \gamma\Biggl(\dsum{i=0}{n}\hat{u(1, t_i)}^2\Biggr)^{1/2}$}.
